@@ -1,6 +1,8 @@
 ﻿#include "gameLogic.h"
 #include "platformInput.h"
+#include "SFML/Graphics.hpp"
 #include <iostream>
+#include <vector>
 
 struct GameplayData {
 	float health = 1.f;
@@ -25,4 +27,9 @@ bool gameplayFrame(float deltaTime) {
 
 void closeGameLogic() {
 
+}
+
+void drawGame(sf::RenderWindow& window)
+{
+	
 }

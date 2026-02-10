@@ -99,7 +99,7 @@ int main()
         // Render
         window.clear();
 
-
+        drawGame(window);
 
         window.display();
     }
