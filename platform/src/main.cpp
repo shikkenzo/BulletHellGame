@@ -37,6 +37,13 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "SFML");
 
+    sf::Texture backgroundTexture;
+    backgroundTexture.loadFromFile(RESOURCES_PATH "SpaceBackground.png");
+    sf::Texture playerTexture;
+    playerTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
+
+    setSprites(backgroundTexture, playerTexture);
+    
     window.setFramerateLimit(60);
 
     if (!initGameplay())

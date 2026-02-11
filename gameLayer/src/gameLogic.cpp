@@ -1,6 +1,5 @@
 ﻿#include "gameLogic.h"
 #include "platformInput.h"
-#include "SFML/Graphics.hpp"
 #include <iostream>
 #include <vector>
 
@@ -9,11 +8,20 @@ struct GameplayData {
 };
 GameplayData data;
 
+sf::Sprite backgroundSprite;
+sf::Sprite playerSprite;
+void setSprites(sf::Texture& background, sf::Texture& player)
+{
+	backgroundSprite.setTexture(background);
+	playerSprite.setTexture(player);
+}
+
 void restartGame()
 {
 	data = {};
 }
 bool initGameplay() {
+	
 	return true;
 }
 
@@ -31,5 +39,6 @@ void closeGameLogic() {
 
 void drawGame(sf::RenderWindow& window)
 {
-	
+	window.draw(backgroundSprite); 
+	window.draw(playerSprite); 
 }
