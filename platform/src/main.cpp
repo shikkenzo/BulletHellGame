@@ -33,6 +33,7 @@ int mapSfmlKeyToPlatformButton(sf::Keyboard::Key key)
     }
 }
 
+sf::View m_camera;
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "SFML");
@@ -61,7 +62,13 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-
+            else if (event.type == sf::Event::Resized)
+			{
+				// Adjust the viewport when the window is resized
+				sf::View camera (sf::FloatRect (0, 0, event.size.width, event.size.height));
+				m_camera = camera;
+				window.setView(m_camera);
+			}
             // Keyboard key pressed/released
             if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased)
             {
