@@ -40,14 +40,22 @@ int main()
 
     sf::Texture backgroundTexture;
     backgroundTexture.loadFromFile(RESOURCES_PATH "SpaceBackground.png");
+    sf::Texture bgDustTexture;
+    bgDustTexture.loadFromFile(RESOURCES_PATH "SpaceDust.png");
+    sf::Texture bgNebulaeTexture;
+    bgNebulaeTexture.loadFromFile(RESOURCES_PATH "SpaceNebulae.png");
+    sf::Texture bgStarsTexture;
+    bgStarsTexture.loadFromFile(RESOURCES_PATH "SpaceStars.png");
+
+
     sf::Texture playerTexture;
     playerTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
 
-    setSprites(backgroundTexture, playerTexture);
+    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, playerTexture);
     
     window.setFramerateLimit(60);
 
-    if (!initGameplay())
+    if (!initGameplay(window))
         return 0;
 
     sf::Clock clock;
@@ -104,7 +112,7 @@ int main()
         platform::internal::updateAllButtons(deltaTime);
 
         // Run game logic frame
-        if (!gameplayFrame(deltaTime))
+        if (!gameplayFrame(deltaTime, window))
             break;
 
         // Reset typed input buffer every frame
