@@ -47,11 +47,13 @@ int main()
     sf::Texture bgStarsTexture;
     bgStarsTexture.loadFromFile(RESOURCES_PATH "SpaceStars.png");
 
+    sf::Texture projectileTextures;
+    projectileTextures.loadFromFile(RESOURCES_PATH "Spaceship/Main ship weapons/PNGs/Main ship weapon - Projectile - Big Space Gun.png");
 
     sf::Texture playerTexture;
     playerTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
 
-    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, playerTexture);
+    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, projectileTextures, playerTexture);
     
     window.setFramerateLimit(60);
 

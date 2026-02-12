@@ -7,12 +7,11 @@ struct Bullet
 	sf::Vector2f position = {};
 	sf::Vector2f fireDirection = {};
 	sf::Vector2f addedMovement = {};
-	float projectileSpeed = 4000.f;
-	float projectileSize = 100.f;
+	float projectileSpeed = 1000.f;
+	float projectileSize = 1.5f;
 
 	void render(sf::RenderWindow& window,
-		sf::Texture projectileTextures,
-		sf::IntRect textureCoords
+		sf::Sprite projectileSprite
 	);
 
 	void update(float deltaTime);
