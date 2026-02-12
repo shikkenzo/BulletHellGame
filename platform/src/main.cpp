@@ -53,7 +53,10 @@ int main()
     sf::Texture playerTexture;
     playerTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
 
-    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, projectileTextures, playerTexture);
+    sf::Texture enemyTexture;
+    enemyTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
+
+    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, projectileTextures, playerTexture, enemyTexture);
     
     window.setFramerateLimit(60);
 

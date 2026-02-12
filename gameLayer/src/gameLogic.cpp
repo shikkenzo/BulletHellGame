@@ -2,6 +2,8 @@
 #include "platformInput.h"
 #include "backgroundRenderer.h"
 #include "bullet.h"
+#include "enemy.h"
+#include "vectorMath.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -15,6 +17,7 @@ struct GameplayData {
 	float health = 1.f;
 
 	std::vector<Bullet> projectiles;
+	std::vector<Enemy> enemies;
 };
 GameplayData m_data;
 
@@ -31,7 +34,8 @@ sf::Sprite m_backgroundNebulaeSprite;
 sf::Sprite m_backgroundStarsSprite;
 sf::Sprite m_projectileSprite;
 sf::Sprite m_playerSprite;
-void setSprites(sf::Texture& background, sf::Texture& bgDust, sf::Texture& bgNebulae, sf::Texture& bgStars, sf::Texture& projectile, sf::Texture& player)
+sf::Sprite m_enemySprite;
+void setSprites(sf::Texture& background, sf::Texture& bgDust, sf::Texture& bgNebulae, sf::Texture& bgStars, sf::Texture& projectile, sf::Texture& player, sf::Texture& enemy)
 {
 	m_backgroundSprite.setTexture(background);
 	m_backgroundSprite.setScale(m_backgroundScale, m_backgroundScale);
@@ -64,8 +68,13 @@ void setSprites(sf::Texture& background, sf::Texture& bgDust, sf::Texture& bgNeb
 
 	m_playerSprite.setTexture(player);
 	m_playerSprite.setScale(m_shipSize, m_shipSize);
-	sf::FloatRect bounds = m_playerSprite.getLocalBounds();
-	m_playerSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+	sf::FloatRect l_playerBounds = m_playerSprite.getLocalBounds();
+	m_playerSprite.setOrigin(l_playerBounds.width / 2.f, l_playerBounds.height / 2.f);
+
+	m_enemySprite.setTexture(enemy);
+	m_enemySprite.setScale(m_shipSize, m_shipSize);
+	sf::FloatRect l_enemyBounds = m_enemySprite.getLocalBounds();
+	m_enemySprite.setOrigin(l_enemyBounds.width / 2.f, l_enemyBounds.height / 2.f);
 }
 
 void restartGame()
@@ -78,6 +87,7 @@ bool initGameplay(sf::RenderWindow& window) {
 
 bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 	sf::View l_view = window.getView();
+	sf::Vector2f l_screenCenter = l_view.getCenter();
 
 #pragma region player movement
 
@@ -105,7 +115,7 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 
 	if (l_move.x != 0 || l_move.y != 0)
 	{
-		l_move = l_move / (std::sqrt((l_move.x * l_move.x) + (l_move.y * l_move.y)));
+		l_move = normalizeVector(l_move);
 	}
 
 	/*std::cout << l_move.x;
@@ -134,7 +144,7 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 	}
 	m_playerSprite.setRotation(m_data.playerRotation);
 
-	m_data.playerPos = l_view.getCenter() + m_data.playerOffset;
+	m_data.playerPos = l_screenCenter + m_data.playerOffset;
 	m_playerSprite.setPosition(m_data.playerPos);
 
 #pragma endregion
@@ -153,8 +163,8 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 
 	for (int i = 0; i < m_data.projectiles.size(); i++)
 	{
-		sf::Vector2f l_direction = m_data.projectiles[i].position - l_view.getCenter();
-		float l_distance = std::sqrt(l_direction.x * l_direction.x + l_direction.y * l_direction.y);
+		sf::Vector2f l_direction = m_data.projectiles[i].position - l_screenCenter;
+		float l_distance = getVectorMagnitude(l_direction);
 		if (l_distance > 2500.f)
 		{
 			m_data.projectiles.erase(m_data.projectiles.begin() + i);
@@ -193,12 +203,38 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 	}
 
 	m_data.playerPos = window.mapPixelToCoords(l_playerWindowPos);
-	m_data.playerOffset = m_data.playerPos - l_view.getCenter();
-	
+	m_data.playerOffset = m_data.playerPos - l_screenCenter;
+
 
 #pragma endregion
 
-	return true;
+
+#pragma region enemies
+
+	if (platform::isButtonPressedOn(platform::Button::Space))
+	{
+		Enemy e;
+		e.position = l_screenCenter; //TODO set proper spawn position
+		m_data.enemies.push_back(e);
+	}
+
+	for (int i = 0; i < m_data.enemies.size(); i++)
+	{
+		sf::Vector2f l_direction = m_data.enemies[i].position - l_screenCenter;
+		float l_distance = getVectorMagnitude(l_direction);
+		if (l_distance > 2500.f)
+		{
+			m_data.enemies.erase(m_data.enemies.begin() + i);
+			i--;
+			continue;
+		}
+
+		m_data.enemies[i].update(deltaTime, m_data.playerPos);
+	}
+
+#pragma endregion
+
+		return true;
 }
 
 void closeGameLogic() {
@@ -211,20 +247,19 @@ void drawGame(sf::RenderWindow& window)
 	{
 		m_backgroundRenderer[i].render(window);
 	}
+
+
 	for (Bullet& b : m_data.projectiles)
 	{
 		b.render(window, m_projectileSprite);
 	}
+
+
+	for (Enemy& e : m_data.enemies)
+	{
+		e.render(window, m_enemySprite);
+	}
+
+
 	window.draw(m_playerSprite);
-}
-
-float vectorToAngle(sf::Vector2f direction)
-{
-	return (std::atan2f(direction.y, direction.x) * 180.f / 3.14159265f) + 90;
-}
-
-sf::Vector2f angleToVector(float angleDegrees)
-{
-	float l_radians = (angleDegrees - 90.f) * 3.14159265f / 180.f;
-	return sf::Vector2f(std::cos(l_radians), std::sin(l_radians));
 }
