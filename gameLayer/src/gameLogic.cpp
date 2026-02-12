@@ -6,7 +6,8 @@
 #include <cmath>
 
 struct GameplayData {
-	sf::Vector2f playerPos = {0.f , 0.f};
+	//ssf::Vector2f playerPos = { 0.f , 0.f };
+	sf::Vector2f playerOffset = { 0.f , 0.f };
 	float playerSpeed = 500.f;
 	float health = 1.f;
 };
@@ -30,7 +31,7 @@ void setSprites(sf::Texture& background, sf::Texture& bgDust, sf::Texture& bgNeb
 	backgroundSprite.setScale(backgroundScale, backgroundScale);
 	backgroundRenderer[0].sprite = backgroundSprite;
 	backgroundRenderer[0].parallaxStrength = 0.f;
-	
+
 	backgroundDustSprite.setTexture(bgDust);
 	backgroundDustSprite.setScale(backgroundScale, backgroundScale);
 	backgroundRenderer[1].sprite = backgroundDustSprite;
@@ -51,9 +52,11 @@ void setSprites(sf::Texture& background, sf::Texture& bgDust, sf::Texture& bgNeb
 	backgroundRenderer[2].backgroundScale = backgroundScale;
 	backgroundRenderer[3].backgroundScale = backgroundScale;
 
-	
+
 	playerSprite.setTexture(player);
 	playerSprite.setScale(shipSize, shipSize);
+	sf::FloatRect bounds = playerSprite.getLocalBounds();
+	playerSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
 
 void restartGame()
@@ -61,7 +64,6 @@ void restartGame()
 	data = {};
 }
 bool initGameplay(sf::RenderWindow& window) {
-	data.playerPos = window.getView().getCenter();
 	return true;
 }
 
@@ -94,20 +96,26 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 
 	if (l_move.x != 0 || l_move.y != 0)
 	{
-		l_move = l_move / (std::sqrt((l_move.x * l_move.x) + (l_move.y * l_move.y))); 
+		l_move = l_move / (std::sqrt((l_move.x * l_move.x) + (l_move.y * l_move.y)));
 	}
-	
-	//std::cout << l_move.x;
-	//std::cout << l_move.y;
-	//std::cout << "\n";
 
-	data.playerPos += deltaTime * data.playerSpeed * l_move;
+	std::cout << l_move.x;
+	std::cout << l_move.y;
+	std::cout << "\n";
+
 	sf::View view = window.getView();
-	view.move(deltaTime * data.playerSpeed * l_move);
+	sf::Vector2f cameraVelocity = deltaTime * data.playerSpeed * sf::Vector2f{ 0.f, -1.f };
+	view.move(cameraVelocity);
 	window.setView(view);
 
-	data.playerPos = window.getView().getCenter();
-	playerSprite.setPosition(data.playerPos - sf::Vector2f{(float)playerSprite.getTextureRect().width / 2 * playerSprite.getScale().x, (float)playerSprite.getTextureRect().height / 2 * playerSprite.getScale().y});
+	data.playerOffset += deltaTime * data.playerSpeed * l_move;
+
+	if (l_move.x != 0 || l_move.y != 0)
+	{
+		playerSprite.setRotation(vectorToAngle(l_move));
+	}
+
+	playerSprite.setPosition(view.getCenter() + data.playerOffset);
 
 #pragma endregion
 
@@ -126,5 +134,10 @@ void drawGame(sf::RenderWindow& window)
 	{
 		backgroundRenderer[i].render(window);
 	}
-	window.draw(playerSprite); 
+	window.draw(playerSprite);
+}
+
+float vectorToAngle(sf::Vector2f direction)
+{
+	return (std::atan2f(direction.y, direction.x) * 180.f / 3.14159265f) + 90;
 }

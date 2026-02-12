@@ -9,3 +9,5 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window);
 void closeGameLogic();
 
 void drawGame(sf::RenderWindow& window);
+
+float vectorToAngle(sf::Vector2f direction);
