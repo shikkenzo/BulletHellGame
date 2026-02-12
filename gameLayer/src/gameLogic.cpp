@@ -10,7 +10,8 @@ struct GameplayData {
 	sf::Vector2f playerPos = { 0.f , 0.f };
 	sf::Vector2f playerOffset = { 0.f , 0.f };
 	float playerRotation = 0.f;
-	float playerSpeed = 500.f;
+	float playerSpeed = 700.f;
+	float scrollSpeed = 500.f;
 	float health = 1.f;
 
 	std::vector<Bullet> projectiles;
@@ -76,11 +77,13 @@ bool initGameplay(sf::RenderWindow& window) {
 }
 
 bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
+	sf::View l_view = window.getView();
+
 #pragma region player movement
 
 	sf::Vector2f l_mouseWorldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	sf::Vector2f l_mouseDir = l_mouseWorldPos - m_data.playerPos;
-	std::cout << window.getView().getCenter().x << "," << window.getView().getCenter().y << "\n";
+	//std::cout << l_view.getCenter().x << "," << l_view.getCenter().y << "\n";
 
 	sf::Vector2f l_move;
 	if (platform::isButtonHeld(platform::Button::W))
@@ -109,8 +112,7 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 	std::cout << l_move.y;
 	std::cout << "\n";*/
 
-	sf::View l_view = window.getView();
-	sf::Vector2f l_cameraVelocity = deltaTime * m_data.playerSpeed * sf::Vector2f{ 0.f, -1.f };
+	sf::Vector2f l_cameraVelocity = deltaTime * m_data.scrollSpeed * sf::Vector2f{ 0.f, -1.f };
 	l_view.move(l_cameraVelocity);
 	window.setView(l_view);
 
@@ -162,6 +164,37 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 
 		m_data.projectiles[i].update(deltaTime);
 	}
+
+#pragma endregion
+
+
+#pragma region window collision
+
+	sf::Vector2i l_playerWindowPos = window.mapCoordsToPixel(m_data.playerPos);
+	/*int playerHalfSizeX = m_playerSprite.getGlobalBounds().width / 2.f;
+	int playerHalfSizeY = m_playerSprite.getGlobalBounds().height / 2.f;*/
+
+	if (l_playerWindowPos.x < 0)
+	{
+		l_playerWindowPos.x = 0;
+	}
+	else if (l_playerWindowPos.x > window.getSize().x)
+	{
+		l_playerWindowPos.x = window.getSize().x;
+	}
+
+	if (l_playerWindowPos.y < 0)
+	{
+		l_playerWindowPos.y = 0;
+	}
+	else if (l_playerWindowPos.y > window.getSize().y)
+	{
+		l_playerWindowPos.y = window.getSize().y;
+	}
+
+	m_data.playerPos = window.mapPixelToCoords(l_playerWindowPos);
+	m_data.playerOffset = m_data.playerPos - l_view.getCenter();
+	
 
 #pragma endregion
 
