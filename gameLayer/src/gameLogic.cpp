@@ -15,61 +15,61 @@ struct GameplayData {
 
 	std::vector<Bullet> projectiles;
 };
-GameplayData data;
+GameplayData m_data;
 
-float shipSize = 5.f;
-
-float backgroundScale = 5.f;
+float m_shipSize = 5.f;
+float m_backgroundScale = 5.f;
 
 constexpr int BACKGROUND_LAYERS = 4;
+constexpr bool ROTATE_WITH_MOUSE = true;
 
-Background backgroundRenderer[BACKGROUND_LAYERS];
-sf::Sprite backgroundSprite;
-sf::Sprite backgroundDustSprite;
-sf::Sprite backgroundNebulaeSprite;
-sf::Sprite backgroundStarsSprite;
-sf::Sprite projectileSprite;
-sf::Sprite playerSprite;
+Background m_backgroundRenderer[BACKGROUND_LAYERS];
+sf::Sprite m_backgroundSprite;
+sf::Sprite m_backgroundDustSprite;
+sf::Sprite m_backgroundNebulaeSprite;
+sf::Sprite m_backgroundStarsSprite;
+sf::Sprite m_projectileSprite;
+sf::Sprite m_playerSprite;
 void setSprites(sf::Texture& background, sf::Texture& bgDust, sf::Texture& bgNebulae, sf::Texture& bgStars, sf::Texture& projectile, sf::Texture& player)
 {
-	backgroundSprite.setTexture(background);
-	backgroundSprite.setScale(backgroundScale, backgroundScale);
+	m_backgroundSprite.setTexture(background);
+	m_backgroundSprite.setScale(m_backgroundScale, m_backgroundScale);
 
-	backgroundDustSprite.setTexture(bgDust);
-	backgroundDustSprite.setScale(backgroundScale, backgroundScale);
+	m_backgroundDustSprite.setTexture(bgDust);
+	m_backgroundDustSprite.setScale(m_backgroundScale, m_backgroundScale);
 
-	backgroundNebulaeSprite.setTexture(bgNebulae);
-	backgroundNebulaeSprite.setScale(backgroundScale, backgroundScale);
+	m_backgroundNebulaeSprite.setTexture(bgNebulae);
+	m_backgroundNebulaeSprite.setScale(m_backgroundScale, m_backgroundScale);
 
-	backgroundStarsSprite.setTexture(bgStars);
-	backgroundStarsSprite.setScale(backgroundScale, backgroundScale);
+	m_backgroundStarsSprite.setTexture(bgStars);
+	m_backgroundStarsSprite.setScale(m_backgroundScale, m_backgroundScale);
 
-	backgroundRenderer[0].sprite = backgroundSprite;
-	backgroundRenderer[1].sprite = backgroundDustSprite;
-	backgroundRenderer[2].sprite = backgroundNebulaeSprite;
-	backgroundRenderer[3].sprite = backgroundStarsSprite;
+	m_backgroundRenderer[0].sprite = m_backgroundSprite;
+	m_backgroundRenderer[1].sprite = m_backgroundDustSprite;
+	m_backgroundRenderer[2].sprite = m_backgroundNebulaeSprite;
+	m_backgroundRenderer[3].sprite = m_backgroundStarsSprite;
 
-	backgroundRenderer[0].parallaxStrength = 0.f;
-	backgroundRenderer[1].parallaxStrength = 0.5f;
-	backgroundRenderer[2].parallaxStrength = 0.7f;
-	backgroundRenderer[3].parallaxStrength = 1.f;
+	m_backgroundRenderer[0].parallaxStrength = 0.f;
+	m_backgroundRenderer[1].parallaxStrength = 0.5f;
+	m_backgroundRenderer[2].parallaxStrength = 0.7f;
+	m_backgroundRenderer[3].parallaxStrength = 1.f;
 
-	backgroundRenderer[0].backgroundScale = backgroundScale;
-	backgroundRenderer[1].backgroundScale = backgroundScale;
-	backgroundRenderer[2].backgroundScale = backgroundScale;
-	backgroundRenderer[3].backgroundScale = backgroundScale;
+	m_backgroundRenderer[0].backgroundScale = m_backgroundScale;
+	m_backgroundRenderer[1].backgroundScale = m_backgroundScale;
+	m_backgroundRenderer[2].backgroundScale = m_backgroundScale;
+	m_backgroundRenderer[3].backgroundScale = m_backgroundScale;
 
-	projectileSprite.setTexture(projectile);
+	m_projectileSprite.setTexture(projectile);
 
-	playerSprite.setTexture(player);
-	playerSprite.setScale(shipSize, shipSize);
-	sf::FloatRect bounds = playerSprite.getLocalBounds();
-	playerSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+	m_playerSprite.setTexture(player);
+	m_playerSprite.setScale(m_shipSize, m_shipSize);
+	sf::FloatRect bounds = m_playerSprite.getLocalBounds();
+	m_playerSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
 
 void restartGame()
 {
-	data = {};
+	m_data = {};
 }
 bool initGameplay(sf::RenderWindow& window) {
 	return true;
@@ -78,20 +78,24 @@ bool initGameplay(sf::RenderWindow& window) {
 bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 #pragma region player movement
 
+	sf::Vector2f l_mouseWorldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+	sf::Vector2f l_mouseDir = l_mouseWorldPos - m_data.playerPos;
+	std::cout << window.getView().getCenter().x << "," << window.getView().getCenter().y << "\n";
+
 	sf::Vector2f l_move;
-	if (platform::isButtonHeld(sf::Keyboard::W))
+	if (platform::isButtonHeld(platform::Button::W))
 	{
 		l_move.y = -1;
 	}
-	if (platform::isButtonHeld(sf::Keyboard::S))
+	if (platform::isButtonHeld(platform::Button::S))
 	{
 		l_move.y = 1;
 	}
-	if (platform::isButtonHeld(sf::Keyboard::A))
+	if (platform::isButtonHeld(platform::Button::A))
 	{
 		l_move.x = -1;
 	}
-	if (platform::isButtonHeld(sf::Keyboard::D))
+	if (platform::isButtonHeld(platform::Button::D))
 	{
 		l_move.x = 1;
 	}
@@ -105,49 +109,58 @@ bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
 	std::cout << l_move.y;
 	std::cout << "\n";*/
 
-	sf::View view = window.getView();
-	sf::Vector2f cameraVelocity = deltaTime * data.playerSpeed * sf::Vector2f{ 0.f, -1.f };
-	view.move(cameraVelocity);
-	window.setView(view);
+	sf::View l_view = window.getView();
+	sf::Vector2f l_cameraVelocity = deltaTime * m_data.playerSpeed * sf::Vector2f{ 0.f, -1.f };
+	l_view.move(l_cameraVelocity);
+	window.setView(l_view);
 
-	data.playerOffset += deltaTime * data.playerSpeed * l_move;
+	m_data.playerOffset += deltaTime * m_data.playerSpeed * l_move;
 
-	if (l_move.x != 0 || l_move.y != 0)
+	if (ROTATE_WITH_MOUSE)
 	{
-		data.playerRotation = vectorToAngle(l_move);
-		playerSprite.setRotation(data.playerRotation);
+		if (l_mouseDir.x != 0 || l_mouseDir.y != 0)
+		{
+			m_data.playerRotation = vectorToAngle(l_mouseDir);
+		}
 	}
+	else
+	{
+		if (l_move.x != 0 || l_move.y != 0)
+		{
+			m_data.playerRotation = vectorToAngle(l_move);
+		}
+	}
+	m_playerSprite.setRotation(m_data.playerRotation);
 
-	data.playerPos = view.getCenter() + data.playerOffset;
-	playerSprite.setPosition(data.playerPos);
+	m_data.playerPos = l_view.getCenter() + m_data.playerOffset;
+	m_playerSprite.setPosition(m_data.playerPos);
 
 #pragma endregion
 
 
 #pragma region projectiles
-	if (platform::isButtonPressedOn(platform::Button::Space))
+	if (platform::isLMousePressed())
 	{
-		//std::cout << "SPACE PRESSED\n";
 		Bullet b;
-		b.position = data.playerPos;
-		b.fireDirection = angleToVector(data.playerRotation);
-		b.addedMovement = cameraVelocity;
-		data.projectiles.push_back(b);
+		b.position = m_data.playerPos;
+		b.fireDirection = angleToVector(m_data.playerRotation);
+		b.addedMovement = l_cameraVelocity;
+		m_data.projectiles.push_back(b);
 		//std::cout << data.projectiles.size();
 	}
 
-	for (int i = 0; i < data.projectiles.size(); i++)
+	for (int i = 0; i < m_data.projectiles.size(); i++)
 	{
-		sf::Vector2f direction = data.projectiles[i].position - view.getCenter();
-		float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		if (distance > 2500.f)
+		sf::Vector2f l_direction = m_data.projectiles[i].position - l_view.getCenter();
+		float l_distance = std::sqrt(l_direction.x * l_direction.x + l_direction.y * l_direction.y);
+		if (l_distance > 2500.f)
 		{
-			data.projectiles.erase(data.projectiles.begin() + i);
+			m_data.projectiles.erase(m_data.projectiles.begin() + i);
 			i--;
 			continue;
 		}
 
-		data.projectiles[i].update(deltaTime);
+		m_data.projectiles[i].update(deltaTime);
 	}
 
 #pragma endregion
@@ -163,13 +176,13 @@ void drawGame(sf::RenderWindow& window)
 {
 	for (int i = 0; i < BACKGROUND_LAYERS; i++)
 	{
-		backgroundRenderer[i].render(window);
+		m_backgroundRenderer[i].render(window);
 	}
-	for (Bullet& b : data.projectiles)
+	for (Bullet& b : m_data.projectiles)
 	{
-		b.render(window, projectileSprite);
+		b.render(window, m_projectileSprite);
 	}
-	window.draw(playerSprite);
+	window.draw(m_playerSprite);
 }
 
 float vectorToAngle(sf::Vector2f direction)
@@ -179,6 +192,6 @@ float vectorToAngle(sf::Vector2f direction)
 
 sf::Vector2f angleToVector(float angleDegrees)
 {
-	float radians = (angleDegrees - 90.f) * 3.14159265f / 180.f;
-	return sf::Vector2f(std::cos(radians), std::sin(radians));
+	float l_radians = (angleDegrees - 90.f) * 3.14159265f / 180.f;
+	return sf::Vector2f(std::cos(l_radians), std::sin(l_radians));
 }
