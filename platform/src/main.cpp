@@ -50,13 +50,26 @@ int main()
     sf::Texture projectileTextures;
     projectileTextures.loadFromFile(RESOURCES_PATH "Spaceship/Main ship weapons/PNGs/Main ship weapon - Projectile - Big Space Gun.png");
 
-    sf::Texture playerTexture;
-    playerTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
+    sf::Texture playerTexture0;
+    sf::Texture playerTexture1;
+    sf::Texture playerTexture2;
+    sf::Texture playerTexture3;
+    playerTexture0.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
+    playerTexture1.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Slight damage.png");
+    playerTexture2.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Damaged.png");
+    playerTexture3.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Very damaged.png");
 
-    sf::Texture enemyTexture;
-    enemyTexture.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
 
-    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, projectileTextures, playerTexture, enemyTexture);
+    sf::Texture enemyTexture0;
+    sf::Texture enemyTexture1;
+    sf::Texture enemyTexture2;
+    sf::Texture enemyTexture3;
+    enemyTexture0.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png");
+    enemyTexture1.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Slight damage.png");
+    enemyTexture2.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Damaged.png");
+    enemyTexture3.loadFromFile(RESOURCES_PATH "Spaceship/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Very damaged.png");
+
+    setSprites(backgroundTexture, bgDustTexture, bgNebulaeTexture, bgStarsTexture, projectileTextures, playerTexture0, playerTexture1, playerTexture2, playerTexture3, enemyTexture0, enemyTexture1, enemyTexture2, enemyTexture3);
     
     window.setFramerateLimit(60);
 

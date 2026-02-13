@@ -8,7 +8,7 @@ void Bullet::render(sf::RenderWindow& window,
 
 	if (isEnemy)
 	{
-
+		projectileSprite.setColor(bulletColor);
 	}
 
 	for (int i = 0; i < 5; i++)

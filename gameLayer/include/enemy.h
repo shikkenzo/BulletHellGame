@@ -4,13 +4,15 @@ struct Enemy
 {
 	sf::Vector2f position = {};
 	sf::Vector2f viewDirection = { 0.f, 1.f };
+	sf::Color enemyColor = { 252, 125, 125 };
+	sf::Sprite enemySprite;
 	float health = 1.f;
-	float speed = 1500.f;
+	float speed = 500.f;
 	float turnSpeed = 2.f;
 	float fireFrequency = 0.1f;
 	float fireRange = 1.8f;
 	float bulletSpeed = 1000.f;
 	float fireTimer;
-	void render(sf::RenderWindow& window, sf::Sprite shipSprite);
-	bool update(float deltaTime, sf::Vector2f playerPos);
+	void render(sf::RenderWindow& window);
+	bool update(float deltaTime, sf::Vector2f playerPosition, sf::Vector2f addedMovement);
 };

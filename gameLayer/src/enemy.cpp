@@ -1,13 +1,15 @@
 #include "enemy.h"
 #include "vectorMath.h"
 
-void Enemy::render(sf::RenderWindow& window, sf::Sprite shipSprite)
+void Enemy::render(sf::RenderWindow& window)
 {
-	shipSprite.setPosition(position);
-	window.draw(shipSprite);
+	enemySprite.setRotation(vectorToAngle(viewDirection));
+	enemySprite.setPosition(position);
+	enemySprite.setColor(enemyColor);
+	window.draw(enemySprite);
 }
 
-bool Enemy::update(float deltaTime, sf::Vector2f playerPosition)
+bool Enemy::update(float deltaTime, sf::Vector2f playerPosition, sf::Vector2f addedMovement)
 {
 	sf::Vector2f directionToPlayer = playerPosition - position;
 	if (getVectorMagnitude(directionToPlayer) == 0) { directionToPlayer = { 1, 0 }; }
@@ -52,7 +54,7 @@ bool Enemy::update(float deltaTime, sf::Vector2f playerPosition)
 
 	length = std::clamp(length, 0.1f, 3.f);
 
-	position += viewDirection * deltaTime * speed * length;
+	position += viewDirection * deltaTime * speed * length + addedMovement;
 
 	return shoot;
 }
