@@ -3,17 +3,17 @@
 
 #Set this to true to ship the game
 #DELETE THE OUT FOLDER AFTER CHANGING. THIS BECAUSE VISUAL STUDIO DOESN'T SEEM TO RECOGNIZE THIS CHANGE AND REBUILD!
-option(PRODUCTION_BUILD "Make this a production build" OFF)
+option(PRODUCTION_BUILD "Make this a production build" ON)
 #DELETE THE OUT FOLDER AFTER CHANGING. THIS BECAUSE VISUAL STUDIO DOESN'T SEEM TO RECOGNIZE THIS CHANGE AND REBUILD!
 
-#if (CMAKE_BUILD_TYPE STREQUAL "Debug") #add for release
-#	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug") #add for release
-#else()
-#	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded") #add for release
-#endif()
+if (CMAKE_BUILD_TYPE STREQUAL "Debug") #add for release
+	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug") #add for release
+else()
+	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded") #add for release
+endif()
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug$<$<CONFIG:Debug>:Debug>") #comment for release
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>") #comment for release
+#set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug$<$<CONFIG:Debug>:Debug>") #comment for release
+#set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>") #comment for release
 
 project("BulletHellGame")
 
@@ -54,10 +54,10 @@ if(MSVC) # If using the VS compiler...
 
 	target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC _CRT_SECURE_NO_WARNINGS)
 
-	#set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup") #no console
+	set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup") #no console
 	
-	set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug<$<CONFIG:Debug>:Debug>") #comment for release
-	set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>") #comment for release
+	#set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug<$<CONFIG:Debug>:Debug>") #comment for release
+	#set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>") #comment for release
 
 endif()
 
