@@ -123,6 +123,12 @@ bool initGameplay(sf::RenderWindow& window) {
 }
 
 bool gameplayFrame(float deltaTime, sf::RenderWindow& window) {
+
+	if (platform::isButtonPressedOn(platform::Button::R))
+	{
+		restartGame();
+	}
+
 	sf::View l_view = window.getView();
 	sf::Vector2f l_screenCenter = l_view.getCenter();
 
