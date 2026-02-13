@@ -20,7 +20,6 @@ project("BulletHellGame")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(thirdparty/SFML-2.6.1)
-add_subdirectory(thirdparty/glm)
 
 # Define MY_SOURCES to be a list of all the source files for my game 
 file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/gameLayer/src/*.cpp")
@@ -73,5 +72,4 @@ target_link_libraries("${CMAKE_PROJECT_NAME}"
 	sfml-system 
 	sfml-audio 
 	sfml-network
-	glm
 )
